@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Абай · Үшінші сөз — интерактивті тест</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@600;700&family=Noto+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#07182f; --navy2:#0d2b4e; --green:#1f9d6b; --green2:#0f6e4a;
+  --gold:#e8b931; --gold2:#b88a12; --ink:#eef3f8; --mute:#9db2c8;
+  --ok:#22c07a; --bad:#ef4b5a; --card:rgba(13,43,78,.78);
+}
+*{box-sizing:border-box;margin:0}
+html{font-size:19px}
+body{
+  font-family:'Noto Sans',system-ui,sans-serif;color:var(--ink);min-height:100vh;line-height:1.55;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72'%3E%3Cg fill='none' stroke='%23e8b931' stroke-opacity='.13' stroke-width='1.6'%3E%3Cpath d='M36 6 L66 36 L36 66 L6 36Z'/%3E%3Cpath d='M36 22c-8 0-12 10-4 14s12-6 6-9'/%3E%3Cpath d='M36 50c8 0 12-10 4-14s-12 6-6 9'/%3E%3C/g%3E%3C/svg%3E"),
+    radial-gradient(1000px 600px at 85% -10%,rgba(31,157,107,.28),transparent 60%),
+    radial-gradient(900px 600px at -10% 110%,rgba(232,185,49,.15),transparent 60%),
+    linear-gradient(160deg,var(--navy),var(--navy2));
+  background-attachment:fixed;
+}
+.wrap{max-width:860px;margin:0 auto;padding:16px 16px 48px}
+header{position:sticky;top:0;z-index:5;padding:12px 0 10px;background:linear-gradient(var(--navy) 70%,transparent)}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-family:'Noto Serif',serif}
+.top b{color:var(--gold);font-size:1.05rem}
+.top span{color:var(--mute);font-size:.9rem}
+.bar{height:12px;border-radius:99px;background:rgba(255,255,255,.1);margin-top:8px;overflow:hidden;border:1px solid rgba(232,185,49,.3)}
+.bar i{display:block;height:100%;width:0;border-radius:99px;transition:width .6s cubic-bezier(.2,.8,.2,1);
+  background:linear-gradient(90deg,var(--green),var(--gold),var(--green));background-size:200% 100%;animation:flow 3s linear infinite}
+@keyframes flow{to{background-position:200% 0}}
+.card{
+  margin-top:18px;padding:clamp(18px,4vw,34px);border-radius:22px;background:var(--card);backdrop-filter:blur(8px);
+  border:1px solid rgba(232,185,49,.35);box-shadow:0 0 0 6px rgba(7,24,47,.5),0 20px 60px rgba(0,0,0,.45);
+  position:relative;animation:in .5s ease both
+}
+.card::before{content:"";position:absolute;left:22px;right:22px;top:-1px;height:5px;border-radius:0 0 8px 8px;
+  background:repeating-linear-gradient(90deg,var(--gold) 0 14px,var(--green) 14px 28px)}
+@keyframes in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.kind{display:inline-block;font-size:.8rem;color:var(--gold);border:1px solid rgba(232,185,49,.5);padding:2px 12px;border-radius:99px;margin-bottom:12px}
+h2{font-family:'Noto Serif',serif;font-size:clamp(1.25rem,3.4vw,1.65rem);line-height:1.4;margin-bottom:20px}
+.opts{display:grid;gap:12px}
+.opt{
+  display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;font:inherit;font-size:1rem;color:var(--ink);cursor:pointer;
+  background:rgba(255,255,255,.05);border:2px solid rgba(157,178,200,.35);border-radius:14px;padding:14px 16px;
+  transition:transform .15s,border-color .2s,background .2s
+}
+.opt:hover:not(:disabled){transform:translateX(4px);border-color:var(--gold)}
+.opt:focus-visible,.btn:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.opt .m{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;font-size:.85rem;color:var(--gold);margin-top:1px}
+.opt.sq .m{border-radius:7px}
+.opt.sel{border-color:var(--gold);background:rgba(232,185,49,.14)}
+.opt.sel .m{background:var(--gold);color:var(--navy)}
+.opt.ok{border-color:var(--ok);background:rgba(34,192,122,.22);animation:pop .45s}
+.opt.ok .m{background:var(--ok);border-color:var(--ok);color:#04271a}
+.opt.bad{border-color:var(--bad);background:rgba(239,75,90,.2);animation:shake .45s}
+.opt.bad .m{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt.miss{border-style:dashed;border-color:var(--ok)}
+.opt:disabled{cursor:default;color:var(--ink)}
+@keyframes pop{50%{transform:scale(1.025);box-shadow:0 0 28px rgba(34,192,122,.55)}}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.tf{grid-template-columns:1fr 1fr}
+.tf .opt{justify-content:center;font-weight:600;font-size:1.15rem;padding:20px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cols h3{font-size:.85rem;color:var(--gold);margin-bottom:8px;font-weight:600}
+.cols .opts{gap:10px}
+.cols .opt{font-size:.95rem}
+.badge{margin-left:auto;flex:none;min-width:26px;height:26px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:700;font-size:.85rem}
+.open{display:flex;gap:12px;flex-wrap:wrap}
+input[type=text]{
+  flex:1 1 220px;font:inherit;font-size:1.15rem;padding:14px 16px;border-radius:14px;color:var(--ink);
+  background:rgba(255,255,255,.07);border:2px solid rgba(157,178,200,.4)
+}
+input.ok{border-color:var(--ok);background:rgba(34,192,122,.2)}
+input.bad{border-color:var(--bad);background:rgba(239,75,90,.2);animation:shake .45s}
+.btn{
+  font:inherit;font-weight:600;font-size:1rem;cursor:pointer;border:0;border-radius:14px;padding:13px 28px;color:var(--navy);
+  background:linear-gradient(135deg,var(--gold),#f6d869);box-shadow:0 6px 20px rgba(232,185,49,.3);transition:transform .15s,opacity .2s
+}
+.btn:hover:not(:disabled){transform:translateY(-2px)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.g{background:linear-gradient(135deg,var(--green),#2fd08f);color:#04271a;box-shadow:0 6px 20px rgba(31,157,107,.35)}
+.btn.line{background:none;color:var(--gold);border:2px solid var(--gold);box-shadow:none}
+.fb{margin-top:18px;padding:14px 16px;border-radius:14px;font-size:.95rem;border-left:6px solid;animation:in .35s both}
+.fb.ok{background:rgba(34,192,122,.13);border-color:var(--ok)}
+.fb.bad{background:rgba(239,75,90,.13);border-color:var(--bad)}
+.fb b{display:block;margin-bottom:2px}
+.nav{margin-top:20px;display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap}
+.res{text-align:center}
+.ring{width:190px;height:190px;border-radius:50%;margin:8px auto 18px;display:grid;place-items:center;
+  background:conic-gradient(var(--gold) calc(var(--p)*1%),rgba(255,255,255,.1) 0);position:relative}
+.ring::after{content:"";position:absolute;inset:14px;border-radius:50%;background:var(--navy2)}
+.ring div{position:relative;z-index:1;font-family:'Noto Serif',serif}
+.ring strong{display:block;font-size:2.6rem;color:var(--gold);line-height:1}
+.msg{font-family:'Noto Serif',serif;font-size:1.3rem;margin:6px 0 20px}
+.wrongs{text-align:left;margin:18px 0;display:grid;gap:8px;font-size:.9rem}
+.wrongs div{padding:10px 14px;border-radius:12px;background:rgba(239,75,90,.12);border-left:4px solid var(--bad)}
+.send{display:grid;gap:12px;margin-top:20px;text-align:left}
+.send label{color:var(--gold);font-size:.9rem}
+.status{font-size:.9rem;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.07)}
+.hero h1{font-family:'Noto Serif',serif;font-size:clamp(1.8rem,6vw,2.8rem);line-height:1.2;margin-bottom:12px}
+.hero p{color:var(--mute);margin-bottom:22px}
+@media (max-width:600px){
+  html{font-size:17.5px}
+  .cols{grid-template-columns:1fr}
+  .tf{grid-template-columns:1fr 1fr}
+  .btn{width:100%}
+  .nav{justify-content:stretch}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="top"><b>Абай · Үшінші сөз</b><span id="cnt"></span></div>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="12" id="pb"><i id="fill"></i></div>
+  </header>
+  <main id="app"></main>
+</div>
+
+<script>
+/* ============ БАПТАУ (мұғалімге) ============
+   SCRIPT_URL — нәтиже жіберілетін мекенжай (Google Apps Script Web App, Make/Zapier webhook, өз сервері).
+   Бос қалса, нәтиже браузерде сақталады және JSON файл ретінде жүктеп алынады. */
+const CONFIG = { SCRIPT_URL: "", TEST_TITLE: "Абай. Үшінші қара сөз" };
+
+/* ============ СҰРАҚТАР ============ */
+const RAW = [
+ {t:"radio", q:"Автор баладағы екі түрлі құмардың екіншісін, яғни жан құмарын қалай сипаттайды?",
+  o:["Көрген-естігенінің бәрін сұрап, білуге, үйренуге талпынатын ішкі құмар","Ішіп-жеп, ұйықтауды қалайтын, өсу үшін қажетті тәннің табиғи құмары","Жалтыр заттарды аузына салып, дәмін татып көруге ғана ұмтылатын құмар","Дауыс пен үнге қызығып, тыныштықты қалайтын сергелдең жанның құмары"],a:0,
+  ex:"Жан құмары — «білсем екен, көрсем екен, үйренсем екен» деген талап."},
+ {t:"multi", q:"Мәтінге сәйкес тән құмарына қатысты қай тұжырымдар дұрыс? (бірнешеуін таңда)",
+  o:["Тән болмаса, ол жанға қонақ үй бола алмайды","Тән құмары болмаса, бала өспейді, қуат таппайды","Тән құмары — ішу, жеу, ұйықтауға деген қажеттілік","Тән құмары баланы хайуаннан артық адам жанына жеткізеді","Ержеткен соң тән жанның билеушісі болуға тиіс"],a:[0,1,2],
+  ex:"Тән — жанға қонақ үй, өсу мен қуаттың көзі. Бірақ адамды хайуаннан ажырататын — жан құмары."},
+ {t:"match", q:"А бағанындағы ұғымды Ә бағанындағы мәтін мазмұнымен сәйкестендір.",
+  l:["Жан құмары","Тән құмары","Хайуанның жаны","Жанның тамағы"],
+  r:["Көрсем екен, білсем екен деп сұрап, ізденетін ішкі талап","Ішіп-жеп, ұйықтауды қалайтын, өсуге қажетті табиғи талап","Білмейді де, білемін деп таласып, дау шығармайтын табиғат","Құмарлана жиып, өрістетіп көбейтетін білім мен ғылым қазынасы"],
+  ex:"Жан — білімге құмар; білім — жанның тамағы; хайуан білмейді, бірақ таласпайды."},
+ {t:"tf", q:"Автордың пікірінше, адам ержеткен соң, күш енген кезде жанына билетпей, тәнін жанға бас ұрғызды.", a:false,
+  ex:"Керісінше: біз «жанды тәнге бас ұрғыздық». Жан бізді жас күнімізде ғана билеген."},
+ {t:"open", q:"Тән құмары болмаса, ол жанға ... бола алмайды. Көп нүктенің орнына мәтіндегі сөз тіркесін жаз (екі сөз).",
+  a:["қонақүй"], show:"қонақ үй", ex:"«Тән жанға қонақ үй бола алмайды» деп жазылған."},
+ {t:"radio", q:"Автор неліктен қазіргі адамдарды хайуаннан да жаман деп санайды?",
+  o:["Білмесе де «білемін» деп таласып, надандығын білімділікке теліп, дау шығарады","Білсем екен деген құмарын сақтап, бірақ ғылым жолына түсуге қорқады","Тән қажетіне ғана көңіл бөліп, хайуандай тыныш, таласпай өмір сүреді","Көрген нәрсенің сырын ұғады, бірақ оны басқаға айтпай, жасырып қояды"],a:0,
+  ex:"Хайуан білмейді, бірақ білемін деп таласпайды; адам надандығын білімге теліп таласады."},
+ {t:"multi", q:"Автор ержеткен адамның қандай қателіктерін атайды? (бірнешеуін таңда)",
+  o:["Көзбен көрген нәрсенің сыртын көргенге ғана тойды","Сырын білуге көңіл бөлмеді, көңіл айтса да сенбеді","Біреу ақыл айтса, «кімнен кім артық?» деп ұқпады","Ғылым тапқандардың жолына түсіп, білім қазынасын көбейтті","Тәнді жанға қызметші етіп, жанның тамағын молайтты"],a:[0,1,2],
+  ex:"Соңғы екі нұсқа — автор қалайтын жол, ал біз оны істемедік."},
+ {t:"match", q:"Өмір кезеңін оған сай мәтін мазмұнымен сәйкестендір.",
+  l:["Бала күн","Ержеткен соң","Көкіректегі күй","Ақыл айтқанда"],
+  r:["Жан билеп, «бұл немене, ол немене?» деп барлығын сұраған кез","Күш енген соң, жанды тәнге бас ұрғызып, сыртына тойған кез","Сәуле жоқ, сенім жоқ, білім нұры түспеген қараңғы күй","«Кімнен кім артық?» деп, артығын ұқпай, бас тартқан қылық"],
+  ex:"Автор бала күнді жақсы деп, ержеткендегі білімсіздікті сынайды."},
+ {t:"tf", q:"Мәтін бойынша, хайуан білмейді, бірақ білемін деп таласпайды; сондықтан надандықпен таласқан адам одан да төмен түседі.", a:true,
+  ex:"Дұрыс: «Хайуан білмейді, білемін деп таласпайды» — адамның таласы одан да жаман."},
+ {t:"open", q:"«Құмарлана жиған қазынамызды көбейтсек керек, бұл жанның ... еді.» Жетпей тұрған сөзді жаз (бір сөз).",
+  a:["тамағы","тамақ"], show:"тамағы", ex:"Білім қазынасы — жанның тамағы."},
+ {t:"radio", q:"«Ғылым тапқандардың жолына неге салмайды екеміз?» деген сұрақ арқылы автор қандай ойды түйеді?",
+  o:["Бала кездегі білуге құмарлықты ержеткенде ақылмен өрістетіп, ғылымға бағыттау керек","Бала кездегі сұраққұмарлықты ержеткенде тоқтатып, жанды тек тыныштыққа үйрету керек","Ғылым табушылардың жолын тәннің қажетін өтеу үшін ғана таңдап, қолдану керек","Білсем екен деген құмарды әлсіретіп, жиылған қазынаны тамақ пен ұйқыға жұмсау керек"],a:0,
+  ex:"Бала күнгі «білсем екен» құмарын ержеткенде ақылмен өрістету қажет."},
+ {t:"multi", q:"Мәтінге сүйенсек, адамды хайуаннан ажырататын қандай белгілер бар? (бірнешеуін таңда)",
+  o:["Дүниенің көрінген һәм көрінбеген сырын білуге ұмтылу","Жанның хайуан жаны емес, адам жаны болуы","Құдайдың адам жанын хайуанның жанынан ірі жаратуы","Тән қажетін жан қажетінен жоғары қойып, соған бағыну","Көргенге тойып, сырын ойлаудан бас тарту"],a:[0,1,2],
+  ex:"Алғашқы үшеуі — мәтіндегі адамдық белгілері; соңғы екеуі — автор сынайтын қателіктер."}
+];
+
+/* ============ КӨМЕКШІ ============ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const norm = s => s.toLowerCase().replace(/[\s.,;:!?«»"'-]+/g,'').replace(/ё/g,'е');
+const KIND = {radio:"Бір дұрыс жауап", multi:"Бірнеше дұрыс жауап", match:"Сәйкестендіру", tf:"Ақиқат па, жалған ба?", open:"Ашық сұрақ"};
+const L = "АӘБВ";   // таңбалар
+
+let Q = [], idx = 0, score = 0, log = [], answered = false, finalRes = null;
+
+function prepare(){
+  Q = RAW.map(x => {
+    const q = {...x};
+    if (q.t==="radio" || q.t==="multi"){
+      const ans = Array.isArray(q.a) ? q.a : [q.a];
+      q.opts = shuffle(q.o.map((s,i)=>({s, c:ans.includes(i)})));
+    }
+    if (q.t==="match") q.ri = shuffle(q.r.map((s,i)=>({s,i})));
+    return q;
+  });
+}
+
+function setProg(){
+  $("#cnt").textContent = idx < Q.length ? `${idx+1} / ${Q.length}` : "Нәтиже";
+  $("#fill").style.width = (Math.min(idx,Q.length)/Q.length*100) + "%";
+  $("#pb").setAttribute("aria-valuenow", idx);
+}
+
+/* ============ БАСТАПҚЫ БЕТ ============ */
+function start(){
+  prepare(); idx=0; score=0; log=[]; setProg(); $("#cnt").textContent="";
+  $("#app").innerHTML = `<section class="card hero">
+    <h1>Абайдың үшінші қара сөзі бойынша тест</h1>
+    <p>12 сұрақ: таңдау, көп жауап, сәйкестендіру, ақиқат/жалған және ашық сұрақ. Әр сұрақ тек берілген мәтінге сүйеніп құрылған — мұқият оқып, ойланып жауап бер.</p>
+    <button class="btn g" id="go">Бастау</button></section>`;
+  $("#go").onclick = render;
+}
+
+/* ============ СҰРАҚТЫ КӨРСЕТУ ============ */
+function render(){
+  answered = false; setProg();
+  const q = Q[idx];
+  let body = "";
+  if (q.t==="radio" || q.t==="multi"){
+    body = `<div class="opts" id="opts">` + q.opts.map((o,i)=>
+      `<button class="opt ${q.t==="multi"?"sq":""}" data-i="${i}"><span class="m">${q.t==="multi"?"":L[i]||i+1}</span><span>${esc(o.s)}</span></button>`).join("") + `</div>`;
+    if (q.t==="multi") body += `<div class="nav"><button class="btn" id="chk" disabled>Тексеру</button></div>`;
+  }
+  if (q.t==="tf"){
+    body = `<div class="opts tf" id="opts"><button class="opt" data-v="true">Ақиқат</button><button class="opt" data-v="false">Жалған</button></div>`;
+  }
+  if (q.t==="open"){
+    body = `<div class="open"><input type="text" id="inp" autocomplete="off" placeholder="Жауабыңды жаз..." aria-label="Жауап"><button class="btn" id="chk" disabled>Тексеру</button></div>`;
+  }
+  if (q.t==="match"){
+    body = `<div class="cols"><div><h3>А бағаны</h3><div class="opts" id="lc">` +
+      q.l.map((s,i)=>`<button class="opt" data-l="${i}"><span>${esc(s)}</span></button>`).join("") +
+      `</div></div><div><h3>Ә бағаны</h3><div class="opts" id="rc">` +
+      q.ri.map((o,k)=>`<button class="opt" data-k="${k}"><span>${esc(o.s)}</span></button>`).join("") +
+      `</div></div></div><div class="nav"><button class="btn" id="chk" disabled>Тексеру</button></div>`;
+  }
+  $("#app").innerHTML = `<section class="card"><span class="kind">${KIND[q.t]}</span><h2>${esc(q.q)}</h2>${body}<div id="fb"></div><div class="nav"><button class="btn g" id="next" hidden>${idx===Q.length-1?"Нәтижені көру":"Келесі"}</button></div></section>`;
+  $("#next").onclick = () => { idx++; idx<Q.length ? render() : result(); window.scrollTo({top:0,behavior:"smooth"}); };
+  ({radio:initRadio,multi:initMulti,tf:initTF,open:initOpen,match:initMatch})[q.t](q);
+}
+
+function finish(q, ok, userAns, correctText){
+  answered = true;
+  if (ok) score++;
+  else log.push({n:idx+1, question:q.q, type:q.t, answer:userAns, correct:correctText});
+  $("#fb").innerHTML = `<div class="fb ${ok?"ok":"bad"}" role="status"><b>${ok?"Дұрыс! ✓":"Қате ✗"}</b>${ok?"":"Дұрыс жауап: "+esc(correctText)+". "}${esc(q.ex)}</div>`;
+  $("#next").hidden = false; $("#next").focus({preventScroll:true});
+}
+
+/* --- Радиобатырма --- */
+function initRadio(q){
+  const bs = [...document.querySelectorAll("#opts .opt")];
+  bs.forEach(b => b.onclick = () => {
+    if (answered) return;
+    const o = q.opts[b.dataset.i];
+    bs.forEach(x => x.disabled = true);
+    b.classList.add(o.c ? "ok":"bad");
+    if (!o.c) bs.find(x => q.opts[x.dataset.i].c).classList.add("ok");
+    finish(q, o.c, o.s, q.opts.find(x=>x.c).s);
+  });
+}
+
+/* --- Checkbox --- */
+function initMulti(q){
+  const bs = [...document.querySelectorAll("#opts .opt")], chk = $("#chk");
+  bs.forEach(b => b.onclick = () => { if(answered) return; b.classList.toggle("sel"); chk.disabled = !bs.some(x=>x.classList.contains("sel")); });
+  chk.onclick = () => {
+    if (answered) return;
+    let ok = true;
+    bs.forEach(b => {
+      const o = q.opts[b.dataset.i], s = b.classList.contains("sel");
+      b.disabled = true; b.classList.remove("sel");
+      if (o.c && s) b.classList.add("ok");
+      else if (!o.c && s){ b.classList.add("bad"); ok = false; }
+      else if (o.c && !s){ b.classList.add("miss"); ok = false; }
+    });
+    chk.hidden = true;
+    const user = q.opts.filter((o,i)=>bs[i].classList.contains("ok")||bs[i].classList.contains("bad")).map(o=>o.s).join(" | ");
+    finish(q, ok, user, q.opts.filter(o=>o.c).map(o=>o.s).join(" | "));
+  };
+}
+
+/* --- Ақиқат / Жалған --- */
+function initTF(q){
+  const bs = [...document.querySelectorAll("#opts .opt")];
+  bs.forEach(b => b.onclick = () => {
+    if (answered) return;
+    const v = b.dataset.v === "true", ok = v === q.a;
+    bs.forEach(x => { x.disabled = true; if ((x.dataset.v==="true")===q.a) x.classList.add("ok"); });
+    if (!ok) b.classList.add("bad");
+    finish(q, ok, v?"Ақиқат":"Жалған", q.a?"Ақиқат":"Жалған");
+  });
+}
+
+/* --- Ашық сұрақ --- */
+function initOpen(q){
+  const inp = $("#inp"), chk = $("#chk");
+  inp.oninput = () => chk.disabled = !inp.value.trim();
+  const go = () => {
+    if (answered || !inp.value.trim()) return;
+    const ok = q.a.some(a => norm(a) === norm(inp.value));
+    inp.disabled = chk.disabled = true; inp.classList.add(ok?"ok":"bad");
+    finish(q, ok, inp.value.trim(), q.show);
+  };
+  chk.onclick = go; inp.onkeydown = e => { if (e.key==="Enter") go(); }; inp.focus({preventScroll:true});
+}
+
+/* --- Сәйкестендіру (басу арқылы) --- */
+function initMatch(q){
+  const L_ = [...document.querySelectorAll("#lc .opt")], R_ = [...document.querySelectorAll("#rc .opt")], chk = $("#chk");
+  const pair = {};          // left index -> right slot (k)
+  let cur = null;
+  const paint = () => {
+    L_.forEach((b,i) => { b.classList.toggle("sel", cur===i); b.querySelector(".badge")?.remove();
+      if (pair[i]!==undefined) b.insertAdjacentHTML("beforeend", `<span class="badge">${i+1}</span>`); });
+    R_.forEach((b,k) => { b.querySelector(".badge")?.remove();
+      const li = Object.keys(pair).find(i => pair[i]==k);
+      if (li!==undefined) b.insertAdjacentHTML("beforeend", `<span class="badge">${+li+1}</span>`); });
+    chk.disabled = Object.keys(pair).length < q.l.length;
+  };
+  L_.forEach((b,i) => b.onclick = () => { if(answered) return; if (pair[i]!==undefined){ delete pair[i]; cur=i; } else cur = (cur===i?null:i); paint(); });
+  R_.forEach((b,k) => b.onclick = () => {
+    if (answered || cur===null) return;
+    Object.keys(pair).forEach(i => { if (pair[i]==k) delete pair[i]; });
+    pair[cur] = k; cur = null; paint();
+  });
+  chk.onclick = () => {
+    if (answered) return;
+    let ok = true;
+    L_.forEach((b,i) => {
+      const good = q.ri[pair[i]].i === i;
+      b.disabled = true; b.classList.remove("sel"); b.classList.add(good?"ok":"bad");
+      R_[pair[i]].disabled = true; R_[pair[i]].classList.add(good?"ok":"bad");
+      if (!good) ok = false;
+    });
+    chk.hidden = true;
+    finish(q, ok, q.l.map((s,i)=>`${s} → ${q.ri[pair[i]].s}`).join(" | "), q.l.map((s,i)=>`${s} → ${q.r[i]}`).join(" | "));
+  };
+}
+
+/* ============ НӘТИЖЕ ============ */
+function result(){
+  setProg();
+  const pct = Math.round(score/Q.length*100);
+  const msg = pct>=90 ? "Тамаша! Сен Абай ойын терең түсінген білімпазсың!" :
+              pct>=70 ? "Жарайсың! Мәтінді жақсы меңгергенсің, аздап қана жетпейді." :
+              pct>=50 ? "Жақсы бастама! Мәтінді қайта оқысаң, нәтиже арта түседі." :
+                        "Жалғастыр! Мәтінді баяу, ойланып қайта оқып, тағы бір көр — міндетті түрде болады!";
+  finalRes = {title:CONFIG.TEST_TITLE, score, total:Q.length, percent:pct, wrong:log, finishedAt:new Date().toISOString()};
+  $("#app").innerHTML = `<section class="card res">
+    <div class="ring" style="--p:${pct}"><div><strong>${pct}%</strong>${score} / ${Q.length} ұпай</div></div>
+    <p class="msg">${msg}</p>
+    ${log.length ? `<div class="wrongs"><b>Қателескен сұрақтар:</b>${log.map(w=>`<div>№${w.n}. ${esc(w.question)}</div>`).join("")}</div>` : `<p>Қате жоқ — барлық жауап дұрыс! 🌟</p>`}
+    <div class="send">
+      <label for="nm">Аты-жөніңді жаз</label>
+      <input type="text" id="nm" autocomplete="name" placeholder="Мысалы: Асқар Нұрлановтың Айдар">
+      <button class="btn g" id="snd" disabled>Мұғалімге жіберу</button>
+      <div class="status" id="st" hidden></div>
+      <button class="btn line" id="dl" hidden>Нәтижені файл ретінде жүктеу</button>
+    </div>
+    <div class="nav"><button class="btn line" id="again">Қайта тапсыру</button></div></section>`;
+  $("#nm").oninput = () => $("#snd").disabled = $("#nm").value.trim().length < 3;
+  $("#snd").onclick = send; $("#again").onclick = start;
+}
+
+async function send(){
+  const name = $("#nm").value.trim(), btn = $("#snd"), st = $("#st");
+  const payload = {student:name, ...finalRes, sentAt:new Date().toISOString()};
+  try { const all = JSON.parse(localStorage.getItem("abai_results")||"[]"); all.push(payload); localStorage.setItem("abai_results", JSON.stringify(all)); } catch(e){}
+  btn.disabled = true; st.hidden = false;
+  const dl = $("#dl"); dl.hidden = false;
+  dl.onclick = () => { const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:"application/json"}));
+    a.download = "нәтиже_"+name.replace(/\s+/g,"_")+".json"; a.click(); };
+  if (!CONFIG.SCRIPT_URL){ st.textContent = "Деректер базасының мекенжайы әлі қосылмаған (CONFIG.SCRIPT_URL). Нәтиже құрылғыда сақталды — файлды жүктеп, мұғалімге жібер."; btn.disabled=false; return; }
+  st.textContent = "Жіберілуде...";
+  try {
+    await fetch(CONFIG.SCRIPT_URL, {method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:JSON.stringify(payload)});
+    st.textContent = "✓ Нәтиже мұғалімге жіберілді. Рақмет, " + name + "!";
+  } catch(e){ st.textContent = "Жіберу сәтсіз болды. Интернетті тексеріп, қайта көр немесе файлды жүктеп ал."; btn.disabled = false; }
+}
+
+start();
+</script>
+</body>
+</html>
